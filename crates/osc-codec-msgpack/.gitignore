@@ -1,0 +1,23 @@
+# Crate-specific ignores for osc-codec-msgpack
+
+# Generated documentation
+/doc/
+target/
+
+# MessagePack test files
+*.msgpack.bak
+*.mp.bak
+test_output.msgpack
+
+# Test artifacts
+*.profraw
+*.gcda
+*.gcno
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/

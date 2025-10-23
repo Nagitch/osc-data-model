@@ -1,0 +1,23 @@
+# Crate-specific ignores for osc-devtools
+
+# Generated documentation
+/doc/
+target/
+
+# Development tool outputs
+dev_output/
+test_results/
+benchmark_results/
+
+# Test artifacts
+*.profraw
+*.gcda
+*.gcno
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/

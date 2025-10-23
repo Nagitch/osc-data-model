@@ -1,0 +1,22 @@
+# Crate-specific ignores for osc-codec-json
+
+# Generated documentation
+/doc/
+target/
+
+# JSON test files
+*.json.bak
+test_output.json
+
+# Test artifacts
+*.profraw
+*.gcda
+*.gcno
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/

@@ -1,0 +1,23 @@
+# Crate-specific ignores for osc-ir
+
+# Generated documentation
+/doc/
+target/
+
+# IR (Intermediate Representation) files
+*.ir.bak
+generated_ir/
+temp_ir/
+
+# Test artifacts
+*.profraw
+*.gcda
+*.gcno
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/

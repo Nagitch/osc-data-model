@@ -1,0 +1,18 @@
+# Crate-specific ignores for osc-adapter-osc-types
+
+# Generated documentation
+/doc/
+target/
+
+# Test artifacts
+*.profraw
+*.gcda
+*.gcno
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/
