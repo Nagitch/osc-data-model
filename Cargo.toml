@@ -1,2 +1,22 @@
 [workspace]
-members=["osc-ir","osc-codec-json","osc-codec-msgpack","osc-adapter-osc-types","osc-devtools"]
+members = [
+    "osc-ir",
+    "osc-codec-json",
+    "osc-codec-msgpack",
+    "osc-adapter-osc-types",
+    "osc-devtools",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/rust-osc-compatible-models"
+documentation = "https://docs.rs/"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.metadata]
+# Minimum Supported Rust Version for CI/build checks
+msrv = "1.70"

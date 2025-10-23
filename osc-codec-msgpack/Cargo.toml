@@ -1,0 +1,11 @@
+[package]
+name = "osc-codec-msgpack"
+version = "0.1.0"
+edition = "2021"
+description = "MessagePack <-> IR conversions"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+osc-ir = { path = "../osc-ir", features = ["alloc", "serde"] }
+serde = { version = "1", features = ["derive"] }
+rmp-serde = "1"

@@ -1,3 +1,30 @@
 {
-  "name": "osc-data-model"
+  "name": "rust-osc-compatible-models",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "RUST_VERSION": "1.80"  
+    }
+  },
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "ms-vscode.cpptools",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "matklad.rust-analyzer"
+      ]
+    }
+  },
+  "containerEnv": {
+    "CARGO_TERM_COLOR": "always"
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localEnv:HOME}/.cargo/registry,destination=/home/vscode/.cargo/registry,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.cargo/git,destination=/home/vscode/.cargo/git,type=bind,consistency=cached"
+  ],
+  "postCreateCommand": "rustup component add clippy rustfmt && cargo --version && rustc --version"
 }

@@ -1,0 +1,12 @@
+[package]
+name = "osc-codec-json"
+version = "0.1.0"
+edition = "2021"
+description = "JSON <-> IR conversions"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+osc-ir = { path = "../osc-ir", features = ["alloc"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"

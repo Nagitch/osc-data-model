@@ -1,0 +1,18 @@
+[package]
+name = "osc-ir"
+version = "0.1.0"
+edition = "2021"
+description = "Protocol-agnostic IR compatible with JSON/MessagePack"
+license = "MIT OR Apache-2.0"
+
+[features]
+# Keep core IR usable in no_std; enable owned containers via `alloc`.
+alloc = []
+serde = ["dep:serde", "dep:serde_bytes"]
+
+[dependencies]
+serde = { version = "1", default-features = false, features = ["derive"], optional = true }
+serde_bytes = { version = "0.11", optional = true }
+
+[dev-dependencies]
+serde_json = "1"

@@ -1,0 +1,7 @@
+.git
+.gitignore
+target
+.vscode
+**/target
+**/.cargo
+**/dist

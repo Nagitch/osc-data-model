@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain: ["1.70.0", "stable"]
+        features: ["", "alloc,serde"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: clippy, rustfmt
+      - name: Build (no default features)
+        run: |
+          cargo build --no-default-features --workspace
+      - name: Build (features)
+        if: matrix.features != ''
+        run: |
+          cargo build --no-default-features --features "${{ matrix.features }}" --workspace
+      - name: Test
+        run: cargo test --workspace --all-features
+      - name: Clippy
+        run: cargo clippy --workspace --all-features -- -D warnings
