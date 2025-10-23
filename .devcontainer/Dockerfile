@@ -9,10 +9,17 @@ ARG USER_GID=$USER_UID
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      git curl ca-certificates pkg-config build-essential clang lld \
+      git curl ca-certificates pkg-config build-essential clang lld sudo \
     && rm -rf /var/lib/apt/lists/* && \
     groupadd --gid ${USER_GID} ${USERNAME} && \
-    useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
+    useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} && \
+    echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} && \
+    chmod 0440 /etc/sudoers.d/${USERNAME}
 
 USER ${USERNAME}
-WORKDIR /workspaces/osc-data-model
+
+# Pre-create cargo cache directories with correct ownership for named volumes
+RUN mkdir -p /home/${USERNAME}/.cargo/registry /home/${USERNAME}/.cargo/git
+
+# Use a generic workdir; VS Code will set the actual workspaceFolder.
+WORKDIR /workspaces

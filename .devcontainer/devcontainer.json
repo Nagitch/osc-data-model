@@ -15,16 +15,25 @@
         "tamasfe.even-better-toml",
         "serayuzgur.crates",
         "matklad.rust-analyzer"
-      ]
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        }
+      }
     }
   },
   "containerEnv": {
     "CARGO_TERM_COLOR": "always"
   },
   "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "mounts": [
-    "source=${localEnv:HOME}/.cargo/registry,destination=/home/vscode/.cargo/registry,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.cargo/git,destination=/home/vscode/.cargo/git,type=bind,consistency=cached"
+    "source=cargo-registry,target=/home/vscode/.cargo/registry,type=volume",
+    "source=cargo-git,target=/home/vscode/.cargo/git,type=volume"
   ],
-  "postCreateCommand": "rustup component add clippy rustfmt && cargo --version && rustc --version"
+  "postCreateCommand": "rustup component add clippy rustfmt && cargo --version && rustc --version && sudo chsh -s /bin/bash vscode"
 }
