@@ -15,5 +15,9 @@ RUN apt-get update && \
     useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
 
 USER ${USERNAME}
+
+# Pre-create cargo cache directories with correct ownership for named volumes
+RUN mkdir -p /home/${USERNAME}/.cargo/registry /home/${USERNAME}/.cargo/git
+
 # Use a generic workdir; VS Code will set the actual workspaceFolder.
 WORKDIR /workspaces
