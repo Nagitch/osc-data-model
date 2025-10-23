@@ -1,5 +1,5 @@
 {
-  "name": "rust-osc-compatible-models",
+  "name": "osc-data-model",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {

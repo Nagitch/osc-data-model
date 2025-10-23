@@ -15,4 +15,4 @@ RUN apt-get update && \
     useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
 
 USER ${USERNAME}
-WORKDIR /workspaces/rust-osc-compatible-models
+WORKDIR /workspaces/osc-data-model

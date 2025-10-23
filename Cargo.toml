@@ -11,7 +11,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/your-org/rust-osc-compatible-models"
+repository = "https://github.com/Nagitch/osc-data-model"
 documentation = "https://docs.rs/"
 
 [workspace.lints.rust]

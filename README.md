@@ -1,4 +1,4 @@
-# rust-osc-compatible-models (workspace)
+# osc-data-model (workspace)
 
 A set of crates providing a protocol-agnostic Intermediate Representation (IR) for OSC-adjacent data and codecs to/from JSON and MessagePack, plus an adapter for `rust-osc-types`.
 
