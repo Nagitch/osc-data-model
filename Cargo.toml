@@ -1,2 +1,2 @@
 [workspace]
-members=["crates/osc-ir","crates/osc-codec-json","crates/osc-codec-msgpack","crates/osc-adapter-osc-types","crates/osc-devtools"]
+members=["osc-ir","osc-codec-json","osc-codec-msgpack","osc-adapter-osc-types","osc-devtools"]
