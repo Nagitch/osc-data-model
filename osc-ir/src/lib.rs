@@ -263,4 +263,17 @@ mod tests {
         };
         assert_eq!(IrValue::from(ts).as_timestamp(), Some(&ts));
     }
+
+    #[test]
+    fn ext_and_default_helpers() {
+        let ext = IrValue::Ext {
+            type_id: 9,
+            data: vec![0xAA, 0xBB],
+        };
+        assert_eq!(ext.as_ext(), Some((9, &[0xAA, 0xBB][..])));
+
+        let default = IrValue::default();
+        assert!(default.is_null());
+        assert!(default.as_array().is_none());
+    }
 }

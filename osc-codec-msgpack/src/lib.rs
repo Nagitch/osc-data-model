@@ -34,4 +34,23 @@ mod tests {
         let decoded = try_from_msgpack(&bytes).expect("decode");
         assert_eq!(value, decoded);
     }
+
+    #[test]
+    fn roundtrip_complex_structure() {
+        let value = IrValue::Map(vec![
+            ("msg".into(), IrValue::from("hello")),
+            ("bin".into(), IrValue::from(vec![1_u8, 2, 3])),
+            (
+                "ext".into(),
+                IrValue::Ext {
+                    type_id: -4,
+                    data: vec![0x10, 0x20, 0x30],
+                },
+            ),
+        ]);
+
+        let bytes = to_msgpack(&value);
+        let decoded = from_msgpack(&bytes);
+        assert_eq!(decoded, value);
+    }
 }
