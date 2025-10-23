@@ -15,4 +15,5 @@ RUN apt-get update && \
     useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
 
 USER ${USERNAME}
-WORKDIR /workspaces/osc-data-model
+# Use a generic workdir; VS Code will set the actual workspaceFolder.
+WORKDIR /workspaces
