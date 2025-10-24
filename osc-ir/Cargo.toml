@@ -2,6 +2,7 @@
 name = "osc-ir"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.75"
 description = "Protocol-agnostic IR compatible with JSON/MessagePack"
 license = "MIT OR Apache-2.0"
 

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        toolchain: ["1.70.0", "stable"]
+        toolchain: ["1.75.0", "stable"]
         features: ["", "alloc,serde"]
     steps:
       - uses: actions/checkout@v4
