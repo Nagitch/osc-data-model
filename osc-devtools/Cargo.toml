@@ -2,6 +2,7 @@
 name = "osc-devtools"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.75"
 description = "CLI / examples for osc-data-model workspace"
 license = "MIT OR Apache-2.0"
 
@@ -9,5 +10,5 @@ license = "MIT OR Apache-2.0"
 osc-ir = { path = "../osc-ir", features = ["alloc", "serde"] }
 osc-codec-json = { path = "../osc-codec-json" }
 osc-codec-msgpack = { path = "../osc-codec-msgpack" }
-clap = { version = "4", features = ["derive"] }
+clap = { workspace = true }
 anyhow = "1"

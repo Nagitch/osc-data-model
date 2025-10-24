@@ -139,8 +139,9 @@ impl IrBundleElement {
 
 /// Protocol-agnostic value space.
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub enum IrValue {
+    #[default]
     Null,
     Bool(bool),
     Integer(i64),
@@ -245,12 +246,6 @@ impl IrValue {
             IrValue::Bundle(bundle) => Some(bundle),
             _ => None,
         }
-    }
-}
-
-impl Default for IrValue {
-    fn default() -> Self {
-        IrValue::Null
     }
 }
 

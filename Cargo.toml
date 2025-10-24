@@ -13,10 +13,15 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Nagitch/osc-data-model"
 documentation = "https://docs.rs/"
+rust-version = "1.75"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
 
 [workspace.metadata]
 # Minimum Supported Rust Version for CI/build checks
-msrv = "1.70"
+msrv = "1.75"
+
+# Modern dependency versions with MSRV 1.75+
+[workspace.dependencies]
+clap = { version = "4.5", features = ["derive"] }
