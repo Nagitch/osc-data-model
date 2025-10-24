@@ -6,6 +6,11 @@ rust-version = "1.75"
 description = "JSON <-> IR conversions"
 license = "MIT OR Apache-2.0"
 
+[features]
+default = ["osc10"]
+osc10 = ["osc-ir/osc10"]
+osc11 = ["osc10", "osc-ir/osc11"]
+
 [dependencies]
 osc-ir = { path = "../osc-ir", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
