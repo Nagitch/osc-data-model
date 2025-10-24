@@ -21,57 +21,56 @@ cargo build --release --bin osc-devtools
 
 ## Usage
 
-The CLI provides various subcommands for working with OSC data:
+The CLI provides subcommands for testing and demonstrating OSC data conversion:
 
 ```bash
 # Show help
 osc-devtools --help
 
-# Test roundtrip conversion between JSON and MessagePack
-osc-devtools roundtrip
+# Test JSON roundtrip conversion
+osc-devtools json-roundtrip
 
-# Convert JSON to MessagePack
-osc-devtools json-to-msgpack input.json output.msgpack
+# Test MessagePack roundtrip conversion
+osc-devtools msgpack-roundtrip
 
-# Convert MessagePack to JSON  
-osc-devtools msgpack-to-json input.msgpack output.json
-
-# Validate OSC IR data
-osc-devtools validate data.json
+# Demonstrate complex bundle nesting and conversion
+osc-devtools bundle-demo
 ```
 
 ## Examples
 
-### Roundtrip Testing
+### JSON Roundtrip Testing
 
-Test that data survives JSON ↔ MessagePack conversion:
-
-```bash
-# Creates test data and verifies it converts correctly
-osc-devtools roundtrip
-```
-
-This creates complex nested bundle structures and verifies:
-- JSON → IR → MessagePack → IR → JSON produces identical results
-- Bundle structure is preserved
-- All data types are handled correctly
-
-### Format Conversion
-
-Convert between JSON and MessagePack formats:
+Test that data survives JSON serialization and deserialization:
 
 ```bash
-# JSON file containing OSC IR data
-echo '{"$type": "bundle", "timetag": 12345, "elements": []}' > bundle.json
-
-# Convert to MessagePack
-osc-devtools json-to-msgpack bundle.json bundle.msgpack
-
-# Convert back to JSON
-osc-devtools msgpack-to-json bundle.msgpack restored.json
-
-# Files should contain equivalent data
+# Test JSON roundtrip with simple string data
+osc-devtools json-roundtrip
 ```
+
+### MessagePack Roundtrip Testing
+
+Test that data survives MessagePack serialization and deserialization:
+
+```bash
+# Test MessagePack roundtrip with simple string data
+osc-devtools msgpack-roundtrip
+```
+
+### Bundle Demo
+
+Demonstrate complex nested bundle structures and cross-format conversion:
+
+```bash
+# Creates complex nested bundles and tests conversion
+osc-devtools bundle-demo
+```
+
+This command:
+- Creates complex nested bundle structures
+- Tests JSON and MessagePack roundtrip conversion
+- Verifies cross-codec compatibility
+- Reports conversion success and data sizes
 
 ### Development Usage
 
@@ -83,37 +82,16 @@ The tools are useful for:
 - **Generating test fixtures** for other projects
 - **Validating OSC data structures** before processing
 
-## Library Usage
-
-The crate also provides library functions for programmatic use:
-
-```rust
-use osc_devtools::{create_test_bundle, roundtrip_test};
-
-// Create complex test data
-let test_data = create_test_bundle();
-
-// Test roundtrip conversion
-let success = roundtrip_test(&test_data);
-assert!(success);
-```
-
 ## Command Reference
 
-### `roundtrip`
-Tests bidirectional conversion between JSON and MessagePack formats using complex test data.
+### `json-roundtrip`
+Tests JSON serialization and deserialization using a simple string value.
 
-### `json-to-msgpack <input> <output>`
-Converts JSON file to MessagePack binary format.
+### `msgpack-roundtrip`
+Tests MessagePack serialization and deserialization using a simple string value.
 
-### `msgpack-to-json <input> <output>`  
-Converts MessagePack binary to JSON format.
-
-### `validate <input>`
-Validates that input file contains valid OSC IR data.
-
-### `benchmark`
-Runs performance benchmarks comparing JSON vs MessagePack serialization.
+### `bundle-demo`
+Demonstrates complex nested bundle creation and tests both JSON and MessagePack conversion with cross-format compatibility verification.
 
 ## Dependencies
 
