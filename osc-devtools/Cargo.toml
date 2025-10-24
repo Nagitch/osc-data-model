@@ -1,14 +1,20 @@
 [package]
 name = "osc-devtools"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
 rust-version = "1.75"
-description = "CLI / examples for osc-data-model workspace"
+description = "Experimental CLI tools and examples for osc-data-model workspace"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/Nagitch/osc-data-model"
+homepage = "https://github.com/Nagitch/osc-data-model"
+documentation = "https://docs.rs/osc-devtools"
+keywords = ["osc", "cli", "tools", "development"]
+categories = ["development-tools"]
+readme = "README.md"
 
 [dependencies]
-osc-ir = { path = "../osc-ir", features = ["alloc", "serde"] }
-osc-codec-json = { path = "../osc-codec-json" }
-osc-codec-msgpack = { path = "../osc-codec-msgpack" }
+osc-ir = { version = "0.1.0-alpha.1", path = "../osc-ir", features = ["alloc", "serde"] }
+osc-codec-json = { version = "0.1.0-alpha.1", path = "../osc-codec-json" }
+osc-codec-msgpack = { version = "0.1.0-alpha.1", path = "../osc-codec-msgpack" }
 clap = { workspace = true }
 anyhow = "1"
