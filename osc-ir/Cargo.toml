@@ -1,10 +1,16 @@
 [package]
 name = "osc-ir"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
 rust-version = "1.75"
-description = "Protocol-agnostic IR compatible with JSON/MessagePack"
+description = "Experimental protocol-agnostic Intermediate Representation for OSC data compatible with JSON/MessagePack"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/Nagitch/osc-data-model"
+homepage = "https://github.com/Nagitch/osc-data-model"
+documentation = "https://docs.rs/osc-ir"
+keywords = ["osc", "protocol", "intermediate-representation", "json", "messagepack"]
+categories = ["encoding", "data-structures"]
+readme = "README.md"
 
 [features]
 # Keep core IR usable in no_std; enable owned containers via `alloc`.
