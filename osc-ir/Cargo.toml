@@ -11,6 +11,15 @@ license = "MIT OR Apache-2.0"
 alloc = []
 serde = ["dep:serde", "dep:serde_bytes"]
 
+# OSC version compatibility features
+# OSC 1.0 support (basic OSC types, bundles, timetags)
+osc10 = []
+# OSC 1.1 support (includes 1.0 features plus additional types and features)
+osc11 = ["osc10"]
+
+# Default to OSC 1.0 support
+default = ["osc10"]
+
 [dependencies]
 serde = { version = "1", default-features = false, features = ["derive"], optional = true }
 serde_bytes = { version = "0.11", optional = true }

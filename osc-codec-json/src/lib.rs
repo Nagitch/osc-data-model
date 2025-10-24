@@ -45,6 +45,18 @@ pub fn to_json(v: &IrValue) -> J {
             ("timetag".to_string(), J::from(bundle.timetag.value)),
             ("elements".to_string(), J::Array(bundle.elements.iter().map(bundle_element_to_json).collect())),
         ].into_iter().collect()),
+        // TODO: OSC 1.1 Color type support not yet implemented
+        #[cfg(feature = "osc11")]
+        IrValue::Color { .. } => {
+            // TODO: Implement Color type JSON serialization
+            J::Null
+        },
+        // TODO: OSC 1.1 MIDI type support not yet implemented
+        #[cfg(feature = "osc11")]
+        IrValue::Midi { .. } => {
+            // TODO: Implement MIDI type JSON serialization
+            J::Null
+        },
     }
 }
 
