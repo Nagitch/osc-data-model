@@ -17,12 +17,15 @@ pub struct IrTimestamp {
 
 /// OSC-compatible timetag for bundle scheduling.
 /// A value of 1 indicates "immediately", larger values represent NTP-style timestamps.
+/// Available with OSC 1.0+ support.
+#[cfg(feature = "osc10")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct IrTimetag {
     pub value: u64,
 }
 
+#[cfg(feature = "osc10")]
 impl IrTimetag {
     /// Creates a timetag for immediate execution
     pub fn immediate() -> Self {
@@ -42,6 +45,8 @@ impl IrTimetag {
 
 /// An element that can be contained within an OSC bundle.
 /// Can be either a message (represented as an IrValue) or a nested bundle.
+/// Available with OSC 1.0+ support.
+#[cfg(feature = "osc10")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq)]
 pub enum IrBundleElement {
@@ -52,6 +57,8 @@ pub enum IrBundleElement {
 }
 
 /// OSC Bundle structure supporting nested bundles with timetags.
+/// Available with OSC 1.0+ support.
+#[cfg(feature = "osc10")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq)]
 pub struct IrBundle {
@@ -61,6 +68,7 @@ pub struct IrBundle {
     pub elements: Vec<IrBundleElement>,
 }
 
+#[cfg(feature = "osc10")]
 impl IrBundle {
     /// Creates a new bundle with immediate execution
     pub fn immediate() -> Self {
@@ -109,6 +117,7 @@ impl IrBundle {
     }
 }
 
+#[cfg(feature = "osc10")]
 impl IrBundleElement {
     /// Returns true if this element is a message
     pub fn is_message(&self) -> bool {
@@ -160,7 +169,27 @@ pub enum IrValue {
         data: Vec<u8>,
     },
     /// OSC Bundle with timetag and nested elements
+    /// Available with OSC 1.0+ support.
+    #[cfg(feature = "osc10")]
     Bundle(IrBundle),
+    /// OSC 1.1 Color type (RGBA)
+    /// Available with OSC 1.1+ support.
+    #[cfg(feature = "osc11")]
+    Color {
+        r: u8,
+        g: u8,
+        b: u8,
+        a: u8,
+    },
+    /// OSC 1.1 MIDI message
+    /// Available with OSC 1.1+ support.
+    #[cfg(feature = "osc11")]
+    Midi {
+        port: u8,
+        status: u8,
+        data1: u8,
+        data2: u8,
+    },
 }
 
 impl fmt::Display for IrValue {
@@ -241,9 +270,26 @@ impl IrValue {
         }
     }
 
+    #[cfg(feature = "osc10")]
     pub fn as_bundle(&self) -> Option<&IrBundle> {
         match self {
             IrValue::Bundle(bundle) => Some(bundle),
+            _ => None,
+        }
+    }
+
+    #[cfg(feature = "osc11")]
+    pub fn as_color(&self) -> Option<(u8, u8, u8, u8)> {
+        match self {
+            IrValue::Color { r, g, b, a } => Some((*r, *g, *b, *a)),
+            _ => None,
+        }
+    }
+
+    #[cfg(feature = "osc11")]
+    pub fn as_midi(&self) -> Option<(u8, u8, u8, u8)> {
+        match self {
+            IrValue::Midi { port, status, data1, data2 } => Some((*port, *status, *data1, *data2)),
             _ => None,
         }
     }
@@ -369,12 +415,14 @@ impl From<IrTimestamp> for IrValue {
     }
 }
 
+#[cfg(feature = "osc10")]
 impl From<IrBundle> for IrValue {
     fn from(v: IrBundle) -> Self {
         IrValue::Bundle(v)
     }
 }
 
+#[cfg(feature = "osc10")]
 impl From<IrTimetag> for IrBundle {
     fn from(timetag: IrTimetag) -> Self {
         IrBundle {
@@ -384,15 +432,31 @@ impl From<IrTimetag> for IrBundle {
     }
 }
 
+#[cfg(feature = "osc10")]
 impl From<IrValue> for IrBundleElement {
     fn from(value: IrValue) -> Self {
         IrBundleElement::Message(value)
     }
 }
 
+#[cfg(feature = "osc10")]
 impl From<IrBundle> for IrBundleElement {
     fn from(bundle: IrBundle) -> Self {
         IrBundleElement::Bundle(bundle)
+    }
+}
+
+impl IrValue {
+    /// Creates a new OSC 1.1 Color value
+    #[cfg(feature = "osc11")]
+    pub fn color(r: u8, g: u8, b: u8, a: u8) -> Self {
+        IrValue::Color { r, g, b, a }
+    }
+
+    /// Creates a new OSC 1.1 MIDI message value
+    #[cfg(feature = "osc11")]
+    pub fn midi(port: u8, status: u8, data1: u8, data2: u8) -> Self {
+        IrValue::Midi { port, status, data1, data2 }
     }
 }
 
@@ -431,6 +495,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "osc10")]
     fn bundle_creation_and_nesting() {
         // Create an immediate bundle
         let mut bundle = IrBundle::immediate();
@@ -466,6 +531,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "osc10")]
     fn bundle_conversions() {
         // Test IrBundle -> IrValue conversion
         let bundle = IrBundle::immediate();
@@ -485,6 +551,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "osc10")]
     fn timetag_functionality() {
         let immediate = IrTimetag::immediate();
         assert!(immediate.is_immediate());
@@ -496,6 +563,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "osc10")]
     fn complex_nested_bundle_structure() {
         // Create a complex nested structure
         let mut root_bundle = IrBundle::immediate();
@@ -538,5 +606,23 @@ mod tests {
         let deeply_nested_ref = nested2_ref.elements[1].as_bundle().unwrap();
         assert_eq!(deeply_nested_ref.len(), 2);
         assert_eq!(deeply_nested_ref.timetag.value, 4000);
+    }
+
+    #[test]
+    #[cfg(feature = "osc11")]
+    fn osc_1_1_types() {
+        // Test Color type
+        let color = IrValue::color(255, 128, 64, 255);
+        assert_eq!(color.as_color(), Some((255, 128, 64, 255)));
+        
+        // Test MIDI type
+        let midi = IrValue::midi(0, 144, 60, 127); // Note on, middle C, velocity 127
+        assert_eq!(midi.as_midi(), Some((0, 144, 60, 127)));
+        
+        // Test that non-matching types return None
+        assert!(color.as_midi().is_none());
+        assert!(midi.as_color().is_none());
+        assert!(IrValue::from(42).as_color().is_none());
+        assert!(IrValue::from("test").as_midi().is_none());
     }
 }
