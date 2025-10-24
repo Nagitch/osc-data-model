@@ -3,7 +3,7 @@ members = [
     "osc-ir",
     "osc-codec-json",
     "osc-codec-msgpack",
-    "osc-adapter-osc-types",
+    # "osc-adapter-osc-types",  # Temporarily disabled due to dependency issues
     "osc-devtools",
 ]
 resolver = "2"
