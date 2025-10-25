@@ -1,4 +1,5 @@
-use osc_ir::{IrValue, IrTimestamp};
+use base64::Engine as _;
+use osc_ir::{IrTimestamp, IrValue};
 use serde_json::Value as J;
 
 /// Convert IR -> serde_json::Value.
@@ -9,19 +10,45 @@ pub fn to_json(v: &IrValue) -> J {
         IrValue::Integer(i) => J::from(*i),
         IrValue::Float(x) => J::from(*x),
         IrValue::String(s) => J::from(s.as_ref()),
-        IrValue::Binary(bytes) => J::from(base64::engine::general_purpose::STANDARD.encode(bytes)),
+        IrValue::Binary(bytes) => J::Object(
+            [
+                ("$type".to_string(), J::from("binary")),
+                (
+                    "data".to_string(),
+                    J::from(base64::engine::general_purpose::STANDARD.encode(bytes)),
+                ),
+            ]
+            .into_iter()
+            .collect(),
+        ),
         IrValue::Array(xs) => J::Array(xs.iter().map(to_json).collect()),
-        IrValue::Map(entries) => J::Object(entries.iter().map(|(k, v)| (k.clone(), to_json(v))).collect()),
-        IrValue::Timestamp(IrTimestamp{seconds, nanos}) => J::Object([
-            ("$type".to_string(), J::from("timestamp")),
-            ("seconds".to_string(), J::from(*seconds)),
-            ("nanos".to_string(), J::from(*nanos as u64)),
-        ].into_iter().collect()),
-        IrValue::Ext{ type_id, data } => J::Object([
-            ("$type".to_string(), J::from("ext")),
-            ("ext".to_string(), J::from(*type_id as i64)),
-            ("data".to_string(), J::from(base64::engine::general_purpose::STANDARD.encode(data))),
-        ].into_iter().collect()),
+        IrValue::Map(entries) => J::Object(
+            entries
+                .iter()
+                .map(|(k, v)| (k.clone(), to_json(v)))
+                .collect(),
+        ),
+        IrValue::Timestamp(IrTimestamp { seconds, nanos }) => J::Object(
+            [
+                ("$type".to_string(), J::from("timestamp")),
+                ("seconds".to_string(), J::from(*seconds)),
+                ("nanos".to_string(), J::from(*nanos as u64)),
+            ]
+            .into_iter()
+            .collect(),
+        ),
+        IrValue::Ext { type_id, data } => J::Object(
+            [
+                ("$type".to_string(), J::from("ext")),
+                ("ext".to_string(), J::from(*type_id as i64)),
+                (
+                    "data".to_string(),
+                    J::from(base64::engine::general_purpose::STANDARD.encode(data)),
+                ),
+            ]
+            .into_iter()
+            .collect(),
+        ),
     }
 }
 
@@ -30,7 +57,9 @@ pub fn from_json(j: &J) -> IrValue {
     match j {
         J::Null => IrValue::Null,
         J::Bool(b) => IrValue::Bool(*b),
-        J::Number(n) => n.as_i64().map(IrValue::Integer)
+        J::Number(n) => n
+            .as_i64()
+            .map(IrValue::Integer)
             .or_else(|| n.as_f64().map(IrValue::Float))
             .unwrap_or(IrValue::Null),
         J::String(s) => IrValue::String(s.clone().into_boxed_str()),
@@ -41,19 +70,69 @@ pub fn from_json(j: &J) -> IrValue {
                     "timestamp" => {
                         let sec = map.get("seconds").and_then(|v| v.as_i64()).unwrap_or(0);
                         let ns = map.get("nanos").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
-                        IrValue::Timestamp(IrTimestamp{ seconds: sec, nanos: ns })
+                        IrValue::Timestamp(IrTimestamp {
+                            seconds: sec,
+                            nanos: ns,
+                        })
                     }
                     "ext" => {
                         let ext = map.get("ext").and_then(|v| v.as_i64()).unwrap_or(0) as i8;
-                        let data = map.get("data").and_then(|v| v.as_str()).map(|s| 
-                            base64::engine::general_purpose::STANDARD.decode(s).unwrap_or_default()).unwrap_or_default();
-                        IrValue::Ext{ type_id: ext, data }
+                        let data = map
+                            .get("data")
+                            .and_then(|v| v.as_str())
+                            .and_then(|s| base64::engine::general_purpose::STANDARD.decode(s).ok())
+                            .unwrap_or_default();
+                        IrValue::Ext { type_id: ext, data }
                     }
-                    _ => IrValue::Map(map.iter().map(|(k,v)| (k.clone(), from_json(v))).collect())
+                    "binary" => {
+                        let data = map
+                            .get("data")
+                            .and_then(|v| v.as_str())
+                            .and_then(|s| base64::engine::general_purpose::STANDARD.decode(s).ok())
+                            .unwrap_or_default();
+                        IrValue::Binary(data)
+                    }
+                    _ => IrValue::Map(map.iter().map(|(k, v)| (k.clone(), from_json(v))).collect()),
                 }
             } else {
-                IrValue::Map(map.iter().map(|(k,v)| (k.clone(), from_json(v))).collect())
+                IrValue::Map(map.iter().map(|(k, v)| (k.clone(), from_json(v))).collect())
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use osc_ir::{IrTimestamp, IrValue};
+
+    #[test]
+    fn binary_roundtrip() {
+        let value = IrValue::from(vec![1_u8, 2, 3, 4]);
+        let json = to_json(&value);
+        let decoded = from_json(&json);
+        assert_eq!(value, decoded);
+    }
+
+    #[test]
+    fn timestamp_roundtrip() {
+        let value = IrValue::from(IrTimestamp {
+            seconds: 123,
+            nanos: 456,
+        });
+        let json = to_json(&value);
+        let decoded = from_json(&json);
+        assert_eq!(value, decoded);
+    }
+
+    #[test]
+    fn ext_roundtrip() {
+        let value = IrValue::Ext {
+            type_id: -5,
+            data: vec![0x10, 0x20],
+        };
+        let json = to_json(&value);
+        let decoded = from_json(&json);
+        assert_eq!(value, decoded);
     }
 }
