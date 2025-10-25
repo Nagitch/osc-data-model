@@ -6,11 +6,11 @@ description = "Adapter between osc-ir and rust-osc-types"
 license = "MIT OR Apache-2.0"
 
 [features]
-osc10 = ["dep:osc-types10"]
-osc11 = ["dep:osc-types11"]
+osc10 = ["dep:osc-types10", "osc-ir/osc10"]
+osc11 = ["dep:osc-types11", "osc-ir/osc11"]
 
 [dependencies]
 osc-ir = { path = "../osc-ir", features = ["alloc"] }
 # Use crates.io when available; during local dev, replace with a path override in the root Cargo.toml [patch] if needed.
-osc-types10 = { version = "0.1", optional = true, default-features = false }
-osc-types11 = { version = "0.1", optional = true, default-features = false }
+osc-types10 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
+osc-types11 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
