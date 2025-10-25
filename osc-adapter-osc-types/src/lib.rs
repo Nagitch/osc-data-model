@@ -138,3 +138,149 @@ pub mod v11 {
         })
     }
 }
+
+#[cfg(all(test, any(feature = "osc10", feature = "osc11")))]
+mod tests {
+    use super::*;
+
+    #[cfg(feature = "osc10")]
+    mod osc10 {
+        use super::*;
+        use alloc::borrow::ToOwned;
+
+        #[test]
+        fn message_to_ir_encodes_metadata_and_args() {
+            use osc_types10 as osc;
+
+            let message = osc::Message {
+                address: "/basic",
+                args: vec![
+                    osc::OscType::Int(42),
+                    osc::OscType::Float(0.5),
+                    osc::OscType::String("text"),
+                    osc::OscType::Blob(&[1, 2, 3]),
+                ],
+            };
+
+            let ir = v10::message_to_ir(&message);
+            let entries = match ir {
+                IrValue::Map(entries) => entries,
+                _ => panic!("expected map"),
+            };
+
+            assert_eq!(entries.len(), 3);
+
+            let ty = entries.iter().find(|(key, _)| key == "$type").unwrap();
+            assert_eq!(ty.1, IrValue::from(MESSAGE_TYPE_TAG));
+
+            let address = entries.iter().find(|(key, _)| key == "address").unwrap();
+            assert_eq!(address.1, IrValue::from("/basic"));
+
+            let args_entry = entries.iter().find(|(key, _)| key == "args").unwrap();
+            let args = match &args_entry.1 {
+                IrValue::Array(values) => values,
+                _ => panic!("expected args array"),
+            };
+
+            let expected = vec![
+                IrValue::Integer(42),
+                IrValue::Float(0.5),
+                IrValue::from("text"),
+                IrValue::Binary(vec![1, 2, 3]),
+            ];
+            assert_eq!(args, &expected);
+        }
+
+        #[test]
+        fn ir_roundtrips_to_message() {
+            use osc_types10 as osc;
+
+            let ir = IrValue::Map(vec![
+                ("$type".to_owned(), IrValue::from(MESSAGE_TYPE_TAG)),
+                ("address".to_owned(), IrValue::from("/roundtrip")),
+                (
+                    "args".to_owned(),
+                    IrValue::Array(vec![
+                        IrValue::Integer(7),
+                        IrValue::Float(-1.25),
+                        IrValue::from("value"),
+                        IrValue::Binary(vec![9, 8, 7]),
+                    ]),
+                ),
+            ]);
+
+            let message = v10::ir_to_message(&ir).expect("expected successful conversion");
+            assert_eq!(message.address, "/roundtrip");
+            assert!(matches!(message.args[0], osc::OscType::Int(7)));
+            assert!(
+                matches!(message.args[1], osc::OscType::Float(f) if (f + 1.25).abs() < f32::EPSILON)
+            );
+            assert!(matches!(message.args[2], osc::OscType::String("value")));
+            assert!(matches!(message.args[3], osc::OscType::Blob(slice) if slice == &[9, 8, 7]));
+        }
+
+        #[test]
+        fn ir_to_message_rejects_unknown_arguments() {
+            let ir = IrValue::Map(vec![
+                ("address".to_owned(), IrValue::from("/invalid")),
+                ("args".to_owned(), IrValue::Array(vec![IrValue::Bool(true)])),
+            ]);
+
+            assert!(v10::ir_to_message(&ir).is_none());
+        }
+    }
+
+    #[test]
+    fn mismatched_type_tag_is_rejected() {
+        let value = IrValue::Map(vec![
+            ("$type".into(), IrValue::from("osc.bundle")),
+            ("address".into(), IrValue::from("/bad")),
+            ("args".into(), IrValue::Array(vec![])),
+        ]);
+
+        assert!(try_extract_message(&value).is_none());
+    }
+
+    #[test]
+    fn missing_type_tag_defaults_to_message() {
+        let value = IrValue::Map(vec![
+            ("address".into(), IrValue::from("/no-tag")),
+            ("args".into(), IrValue::Array(vec![])),
+        ]);
+
+        let extracted = try_extract_message(&value).expect("expected message extraction");
+        assert_eq!(extracted.0, "/no-tag");
+        assert!(extracted.1.is_empty());
+    }
+
+    #[cfg(feature = "osc11")]
+    mod osc11 {
+        use super::*;
+
+        #[test]
+        fn ir_to_message_rejects_color_and_midi() {
+            let ir = IrValue::Map(vec![
+                ("address".into(), IrValue::from("/unsupported")),
+                (
+                    "args".into(),
+                    IrValue::Array(vec![
+                        IrValue::Color {
+                            r: 0,
+                            g: 1,
+                            b: 2,
+                            a: 3,
+                        },
+                        IrValue::Midi {
+                            port: 1,
+                            status: 2,
+                            data1: 3,
+                            data2: 4,
+                        },
+                    ]),
+                ),
+            ]);
+
+            assert!(v11::ir_to_message(&ir).is_none());
+        }
+    }
+}
