@@ -162,6 +162,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
+name = "osc-adapter-osc-types"
+version = "0.1.0"
+dependencies = [
+ "osc-codec-msgpack",
+ "osc-ir",
+ "osc-types10",
+ "osc-types11",
+]
+
+[[package]]
 name = "osc-codec-json"
 version = "0.1.0-alpha.1"
 dependencies = [
@@ -198,6 +208,21 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
+]
+
+[[package]]
+name = "osc-types10"
+version = "0.1.0-alpha.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e6dcbfdb35dffc2ca824455f7c73f70f4a5410600b499c9fe3a1dcd8b07cd85d"
+
+[[package]]
+name = "osc-types11"
+version = "0.1.0-alpha.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ee12bcfe19167dd64aae8504a52816bd9700448967361cd10d10c905863a9eb"
+dependencies = [
+ "osc-types10",
 ]
 
 [[package]]

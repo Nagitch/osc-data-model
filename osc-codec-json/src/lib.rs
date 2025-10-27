@@ -144,8 +144,8 @@ mod tests {
         bundle.add_message(IrValue::from(42));
 
         let mut nested_bundle = IrBundle::immediate();
-        nested_bundle.add_message(IrValue::from(true));
-        nested_bundle.add_message(IrValue::from(3.14));
+    nested_bundle.add_message(IrValue::from(true));
+    nested_bundle.add_message(IrValue::from(core::f64::consts::PI));
         
         bundle.add_bundle(nested_bundle);
 

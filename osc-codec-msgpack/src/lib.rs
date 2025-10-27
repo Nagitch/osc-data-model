@@ -93,4 +93,47 @@ mod tests {
         let decoded = from_msgpack(&bytes);
         assert_eq!(value, decoded);
     }
+
+    #[test]
+    fn roundtrip_osc_message_like() {
+        // Construct an IrValue that matches the adapter's OSC message representation
+        let value = IrValue::Map(vec![
+            ("$type".into(), IrValue::from("osc.message")),
+            ("address".into(), IrValue::from("/test")),
+            (
+                "args".into(),
+                IrValue::Array(vec![
+                    IrValue::Integer(7),
+                    IrValue::Float(1.5),
+                    IrValue::from("text"),
+                    IrValue::Binary(vec![1_u8, 2, 3]),
+                ]),
+            ),
+        ]);
+
+        let bytes = to_msgpack(&value);
+        let decoded = from_msgpack(&bytes);
+
+        // Structure-preserving roundtrip
+        assert_eq!(decoded, value);
+
+        // Extract and validate fields similar to adapter::try_extract_message
+        let map = decoded.as_map().expect("expected map");
+        let address = map.iter().find(|(k, _)| k == "address").unwrap().1.as_str();
+        assert_eq!(address, Some("/test"));
+
+        let args = map
+            .iter()
+            .find(|(k, _)| k == "args")
+            .unwrap()
+            .1
+            .as_array()
+            .expect("expected args array");
+
+        assert_eq!(args.len(), 4);
+        assert_eq!(args[0].as_integer(), Some(7));
+        assert!((args[1].as_float().unwrap() - 1.5).abs() < f64::EPSILON);
+        assert_eq!(args[2].as_str(), Some("text"));
+        assert_eq!(args[3].as_binary(), Some(&[1_u8, 2, 3][..]));
+    }
 }

@@ -68,7 +68,7 @@ pub mod v10 {
         }
     }
 
-    fn ir_to_arg<'a>(value: &'a IrValue) -> Option<osc::OscType<'a>> {
+    fn ir_to_arg(value: &IrValue) -> Option<osc::OscType<'_>> {
         match value {
             IrValue::Integer(i) => i32::try_from(*i).ok().map(osc::OscType::Int),
             IrValue::Float(f) => Some(osc::OscType::Float(*f as f32)),
@@ -83,7 +83,7 @@ pub mod v10 {
         message_to_ir_map(message.address, args)
     }
 
-    pub fn ir_to_message<'a>(value: &'a IrValue) -> Option<osc::Message<'a>> {
+    pub fn ir_to_message(value: &IrValue) -> Option<osc::Message<'_>> {
         let (address, args) = try_extract_message(value)?;
         let mut osc_args = Vec::with_capacity(args.len());
         for arg in args {
@@ -110,7 +110,7 @@ pub mod v11 {
         }
     }
 
-    fn ir_to_arg<'a>(value: &'a IrValue) -> Option<osc::OscType<'a>> {
+    fn ir_to_arg(value: &IrValue) -> Option<osc::OscType<'_>> {
         match value {
             IrValue::Integer(i) => i32::try_from(*i).ok().map(osc::OscType::Int),
             IrValue::Float(f) => Some(osc::OscType::Float(*f as f32)),
@@ -126,7 +126,7 @@ pub mod v11 {
         message_to_ir_map(message.address, args)
     }
 
-    pub fn ir_to_message<'a>(value: &'a IrValue) -> Option<osc::Message<'a>> {
+    pub fn ir_to_message(value: &IrValue) -> Option<osc::Message<'_>> {
         let (address, args) = try_extract_message(value)?;
         let mut osc_args = Vec::with_capacity(args.len());
         for arg in args {
@@ -216,7 +216,7 @@ mod tests {
                 matches!(message.args[1], osc::OscType::Float(f) if (f + 1.25).abs() < f32::EPSILON)
             );
             assert!(matches!(message.args[2], osc::OscType::String("value")));
-            assert!(matches!(message.args[3], osc::OscType::Blob(slice) if slice == &[9, 8, 7]));
+            assert!(matches!(message.args[3], osc::OscType::Blob(slice) if slice == [9, 8, 7]));
         }
 
         #[test]

@@ -581,8 +581,8 @@ mod tests {
         nested2.add_message(IrValue::from("nested2 message"));
         
         let mut deeply_nested = IrBundle::new(IrTimetag::from_ntp(4000));
-        deeply_nested.add_message(IrValue::from("deeply nested message"));
-        deeply_nested.add_message(IrValue::from(3.14));
+    deeply_nested.add_message(IrValue::from("deeply nested message"));
+    deeply_nested.add_message(IrValue::from(core::f64::consts::PI));
         
         nested2.add_bundle(deeply_nested);
         
