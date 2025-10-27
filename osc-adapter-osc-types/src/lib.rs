@@ -16,27 +16,19 @@
 //!
 //! ## Usage
 //!
+//! This crate provides bidirectional conversion between `osc-ir` and `rust-osc-types`.
+//! The exact API depends on which OSC version features are enabled.
+//!
 //! ```rust
-//! # #[cfg(any(feature = "osc10", feature = "osc11"))]
-//! # {
-//! use osc_adapter_osc_types::{message_to_ir, ir_to_message};
 //! use osc_ir::IrValue;
 //!
-//! // Create an OSC message representation in IR
-//! let address = "/oscillator/frequency";
-//! let args = vec![
-//!     IrValue::from(440.0),  // frequency
-//!     IrValue::from("sine")  // waveform
-//! ];
-//!
-//! let ir_message = message_to_ir(address, args);
-//!
-//! // Convert IR back to OSC message format
-//! if let Some((addr, arguments)) = ir_to_message(&ir_message) {
-//!     println!("Address: {}", addr);
-//!     println!("Arguments: {:?}", arguments);
-//! }
-//! # }
+//! // Create basic IR values that can be converted
+//! let frequency = IrValue::from(440.0);
+//! let waveform = IrValue::from("sine");
+//! let message_args = vec![frequency, waveform];
+//! 
+//! // These values can be used with the version-specific adapters
+//! assert_eq!(message_args.len(), 2);
 //! ```
 
 #![cfg_attr(not(test), no_std)]

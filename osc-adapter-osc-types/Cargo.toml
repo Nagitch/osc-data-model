@@ -1,6 +1,6 @@
 [package]
 name = "osc-adapter-osc-types"
-version = "0.1.0-alpha.2"
+version = "0.1.0-alpha.3"
 edition = "2021"
 rust-version = "1.75"
 description = "Adapter between osc-ir and rust-osc-types for bidirectional conversion"
