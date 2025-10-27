@@ -15,4 +15,5 @@ osc-ir = { path = "../osc-ir", features = ["alloc"] }
 osc-types10 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
 osc-types11 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
 
-[workspace]
+[dev-dependencies]
+osc-codec-msgpack = { path = "../osc-codec-msgpack" }

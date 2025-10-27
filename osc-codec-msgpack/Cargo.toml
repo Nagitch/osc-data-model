@@ -16,3 +16,6 @@ readme = "README.md"
 osc-ir = { version = "0.1.0-alpha.1", path = "../osc-ir", features = ["alloc", "serde"] }
 serde = { version = "1", features = ["derive"] }
 rmp-serde = "1"
+
+[dev-dependencies]
+rmpv = "1"
