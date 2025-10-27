@@ -1,3 +1,43 @@
+//! # osc-codec-json
+//!
+//! ⚠️ **EXPERIMENTAL** ⚠️  
+//! This crate is experimental and APIs may change significantly between versions.
+//!
+//! JSON codec for the `osc-ir` intermediate representation, enabling seamless conversion
+//! between OSC data structures and JSON format.
+//!
+//! ## Features
+//!
+//! - **Bidirectional Conversion**: Convert `IrValue` to/from JSON
+//! - **Bundle Support**: Full support for OSC bundles with nested structures
+//! - **Type Preservation**: Special handling for binary data, timestamps, and extended types
+//! - **OSC Compatibility**: Support for OSC 1.0 and 1.1 features via feature flags
+//!
+//! ## Usage
+//!
+//! ```rust
+//! use osc_ir::{IrValue, IrBundle, IrTimetag};
+//! use osc_codec_json::{to_json, from_json};
+//!
+//! // Create some data
+//! # #[cfg(feature = "osc10")]
+//! # {
+//! let mut bundle = IrBundle::new(IrTimetag::from_ntp(12345));
+//! bundle.add_message(IrValue::from("hello"));
+//! bundle.add_message(IrValue::from(42));
+//!
+//! let value = IrValue::Bundle(bundle);
+//!
+//! // Convert to JSON
+//! let json = to_json(&value);
+//! println!("{}", serde_json::to_string_pretty(&json).unwrap());
+//!
+//! // Convert back from JSON
+//! let restored = from_json(&json);
+//! assert_eq!(value, restored);
+//! # }
+//! ```
+
 use osc_ir::{IrValue, IrTimestamp, IrBundle, IrBundleElement, IrTimetag};
 use serde_json::Value as J;
 use base64::Engine;

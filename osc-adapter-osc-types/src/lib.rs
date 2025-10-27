@@ -1,3 +1,44 @@
+//! # osc-adapter-osc-types
+//!
+//! ⚠️ **EXPERIMENTAL** ⚠️  
+//! This crate is experimental and APIs may change significantly between versions.
+//!
+//! Bidirectional adapter between `osc-ir` intermediate representation and `rust-osc-types`
+//! for seamless conversion between OSC data formats.
+//!
+//! ## Features
+//!
+//! - **Bidirectional Conversion**: Convert between `IrValue` and OSC types from `rust-osc-types`
+//! - **OSC Version Support**: Support for both OSC 1.0 and OSC 1.1 via feature flags
+//! - **Message Conversion**: Convert OSC messages to/from IR representation
+//! - **Type Preservation**: Maintain type information during conversion
+//! - **no_std Compatible**: Works in no_std environments with `alloc`
+//!
+//! ## Usage
+//!
+//! ```rust
+//! # #[cfg(any(feature = "osc10", feature = "osc11"))]
+//! # {
+//! use osc_adapter_osc_types::{message_to_ir, ir_to_message};
+//! use osc_ir::IrValue;
+//!
+//! // Create an OSC message representation in IR
+//! let address = "/oscillator/frequency";
+//! let args = vec![
+//!     IrValue::from(440.0),  // frequency
+//!     IrValue::from("sine")  // waveform
+//! ];
+//!
+//! let ir_message = message_to_ir(address, args);
+//!
+//! // Convert IR back to OSC message format
+//! if let Some((addr, arguments)) = ir_to_message(&ir_message) {
+//!     println!("Address: {}", addr);
+//!     println!("Arguments: {:?}", arguments);
+//! }
+//! # }
+//! ```
+
 #![cfg_attr(not(test), no_std)]
 
 extern crate alloc;

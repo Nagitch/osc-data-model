@@ -18,7 +18,7 @@ osc10 = ["osc-ir/osc10"]
 osc11 = ["osc10", "osc-ir/osc11"]
 
 [dependencies]
-osc-ir = { version = "0.1.0-alpha.1", path = "../osc-ir", features = ["alloc"] }
+osc-ir = { version = "0.1.0-alpha.1", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 base64 = "0.22"

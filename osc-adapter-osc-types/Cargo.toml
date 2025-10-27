@@ -1,19 +1,26 @@
 [package]
 name = "osc-adapter-osc-types"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
-description = "Adapter between osc-ir and rust-osc-types"
+rust-version = "1.75"
+description = "Adapter between osc-ir and rust-osc-types for bidirectional conversion"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/Nagitch/osc-data-model"
+homepage = "https://github.com/Nagitch/osc-data-model"
+documentation = "https://docs.rs/osc-adapter-osc-types"
+keywords = ["osc", "adapter", "rust-osc-types", "conversion"]
+categories = ["encoding", "data-structures"]
+readme = "README.md"
 
 [features]
 osc10 = ["dep:osc-types10", "osc-ir/osc10"]
 osc11 = ["dep:osc-types11", "osc-ir/osc11"]
 
 [dependencies]
-osc-ir = { path = "../osc-ir", features = ["alloc"] }
+osc-ir = { version = "0.1.0-alpha.1", features = ["alloc"] }
 # Use crates.io when available; during local dev, replace with a path override in the root Cargo.toml [patch] if needed.
 osc-types10 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
 osc-types11 = { version = "0.1.0-alpha.2", optional = true, default-features = false }
 
 [dev-dependencies]
-osc-codec-msgpack = { path = "../osc-codec-msgpack" }
+osc-codec-msgpack = { version = "0.1.0-alpha.1" }

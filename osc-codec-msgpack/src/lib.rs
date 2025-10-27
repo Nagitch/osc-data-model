@@ -1,3 +1,45 @@
+//! # osc-codec-msgpack
+//!
+//! ⚠️ **EXPERIMENTAL** ⚠️  
+//! This crate is experimental and APIs may change significantly between versions.
+//!
+//! MessagePack codec for the `osc-ir` intermediate representation, enabling efficient binary
+//! serialization of OSC data structures.
+//!
+//! ## Features
+//!
+//! - **Bidirectional Conversion**: Convert `IrValue` to/from MessagePack binary format
+//! - **Efficient Storage**: Compact binary representation with MessagePack
+//! - **Bundle Support**: Full support for OSC bundles with nested structures  
+//! - **Type Preservation**: Native support for binary data, timestamps, and all OSC types
+//! - **Cross-Format Compatibility**: Works seamlessly with JSON codec for the same data
+//!
+//! ## Usage
+//!
+//! ```rust
+//! use osc_ir::{IrValue, IrBundle, IrTimetag};
+//! use osc_codec_msgpack::{to_msgpack, from_msgpack};
+//!
+//! // Create some data
+//! # #[cfg(feature = "osc10")]
+//! # {
+//! let mut bundle = IrBundle::new(IrTimetag::from_ntp(12345));
+//! bundle.add_message(IrValue::from("hello"));
+//! bundle.add_message(IrValue::from(42));
+//! bundle.add_message(IrValue::from(vec![1u8, 2, 3, 4])); // binary data
+//!
+//! let value = IrValue::Bundle(bundle);
+//!
+//! // Convert to MessagePack
+//! let msgpack_data = to_msgpack(&value);
+//! println!("Serialized {} bytes", msgpack_data.len());
+//!
+//! // Convert back from MessagePack
+//! let restored = from_msgpack(&msgpack_data);
+//! assert_eq!(value, restored);
+//! # }
+//! ```
+
 use osc_ir::IrValue;
 
 pub type EncodeResult<T> = Result<T, rmp_serde::encode::Error>;
