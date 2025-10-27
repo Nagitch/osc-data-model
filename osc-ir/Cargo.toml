@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/Nagitch/osc-data-model"
 homepage = "https://github.com/Nagitch/osc-data-model"
 documentation = "https://docs.rs/osc-ir"
-keywords = ["osc", "protocol", "intermediate-representation", "json", "messagepack"]
+keywords = ["osc", "protocol", "ir", "json", "messagepack"]
 categories = ["encoding", "data-structures"]
 readme = "README.md"
 
