@@ -39,6 +39,22 @@
 //! assert_eq!(value, restored);
 //! # }
 //! ```
+//!
+//! ## Performance
+//!
+//! MessagePack typically provides:
+//! - **Smaller size** than JSON (especially for binary data)
+//! - **Faster serialization/deserialization** than JSON
+//! - **Native binary support** without encoding overhead
+//!
+//! ## API Reference
+//!
+//! ### Core Functions
+//!
+//! - [`to_msgpack`] - Convert IR to MessagePack binary
+//! - [`from_msgpack`] - Convert MessagePack binary to IR
+//! - [`try_to_msgpack`] - Fallible conversion to MessagePack
+//! - [`try_from_msgpack`] - Fallible conversion from MessagePack
 
 use osc_ir::IrValue;
 
