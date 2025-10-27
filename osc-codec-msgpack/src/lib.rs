@@ -165,7 +165,7 @@ mod tests {
         let root = read_value(&mut cursor).expect("must decode as msgpack Value");
 
         // Helper: unwrap serde's externally tagged enum representation
-        fn unwrap_enum<'a>(v: &'a Value) -> (&'a str, &'a Value) {
+        fn unwrap_enum(v: &Value) -> (&str, &Value) {
             match v {
                 // Map form: { "Variant": payload }
                 Value::Map(kv) if kv.len() == 1 => {
