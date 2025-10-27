@@ -165,8 +165,8 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 name = "osc-adapter-osc-types"
 version = "0.1.0-alpha.1"
 dependencies = [
- "osc-codec-msgpack",
- "osc-ir",
+ "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "osc-types10",
  "osc-types11",
 ]
@@ -176,7 +176,19 @@ name = "osc-codec-json"
 version = "0.1.0-alpha.1"
 dependencies = [
  "base64",
- "osc-ir",
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "osc-codec-json"
+version = "0.1.0-alpha.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bcd47f51abd687c886eb1fc2281e640a187eec7d6dfc7a1c674a9b25d2598749"
+dependencies = [
+ "base64",
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_json",
 ]
@@ -185,9 +197,20 @@ dependencies = [
 name = "osc-codec-msgpack"
 version = "0.1.0-alpha.1"
 dependencies = [
- "osc-ir",
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rmp-serde",
  "rmpv",
+ "serde",
+]
+
+[[package]]
+name = "osc-codec-msgpack"
+version = "0.1.0-alpha.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "adc6e1d77ba4415e216d9eff921d266b8361f2599bb7557586ab74f0bbee2d44"
+dependencies = [
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rmp-serde",
  "serde",
 ]
 
@@ -197,9 +220,9 @@ version = "0.1.0-alpha.1"
 dependencies = [
  "anyhow",
  "clap",
- "osc-codec-json",
- "osc-codec-msgpack",
- "osc-ir",
+ "osc-codec-json 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -209,6 +232,16 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
+]
+
+[[package]]
+name = "osc-ir"
+version = "0.1.0-alpha.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56f6bfb8751d4c5420e75a5104e0100be476dc915a6f4883c5f53c42e20005fb"
+dependencies = [
+ "serde",
+ "serde_bytes",
 ]
 
 [[package]]
