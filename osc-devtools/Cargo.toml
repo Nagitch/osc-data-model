@@ -1,6 +1,6 @@
 [package]
 name = "osc-devtools"
-version = "0.1.0-alpha.2"
+version = "0.1.0-alpha.3"
 edition = "2021"
 rust-version = "1.75"
 description = "Experimental CLI tools and examples for osc-data-model workspace"
@@ -14,7 +14,7 @@ readme = "README.md"
 
 [dependencies]
 osc-ir = { version = "0.1.0-alpha.1", features = ["alloc", "serde"] }
-osc-codec-json = { version = "0.1.0-alpha.3" }
+osc-codec-json = { version = "0.1.0-alpha.5" }
 osc-codec-msgpack = { version = "0.1.0-alpha.1" }
 clap = { workspace = true }
 anyhow = "1"

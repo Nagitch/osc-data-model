@@ -86,11 +86,8 @@ pub fn to_json(v: &IrValue) -> J {
             ("elements".to_string(), J::Array(bundle.elements.iter().map(bundle_element_to_json).collect())),
         ].into_iter().collect()),
         // OSC 1.1 Color and MIDI types - currently serialized as null
-        // These will be properly implemented in a future version
-        #[cfg(feature = "osc11")]
-        IrValue::Color { .. } => J::Null,
-        #[cfg(feature = "osc11")]
-        IrValue::Midi { .. } => J::Null,
+        // This handles any additional variants when osc11 is enabled
+        _ => J::Null,
     }
 }
 
