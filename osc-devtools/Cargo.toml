@@ -13,8 +13,8 @@ categories = ["development-tools"]
 readme = "README.md"
 
 [dependencies]
-osc-ir = { version = "0.1.0-alpha.1", features = ["alloc", "serde"] }
-osc-codec-json = { version = "0.1.0-alpha.1" }
-osc-codec-msgpack = { version = "0.1.0-alpha.1" }
+osc-ir = { version = "0.1.0-alpha.1", path = "../osc-ir", features = ["alloc", "serde"] }
+osc-codec-json = { version = "0.1.0-alpha.1", path = "../osc-codec-json" }
+osc-codec-msgpack = { version = "0.1.0-alpha.1", path = "../osc-codec-msgpack" }
 clap = { workspace = true }
 anyhow = "1"
