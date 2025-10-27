@@ -115,6 +115,9 @@ pub mod v10 {
             IrValue::Float(f) => Some(osc::OscType::Float(*f as f32)),
             IrValue::String(s) => Some(osc::OscType::String(s.as_ref())),
             IrValue::Binary(bytes) => Some(osc::OscType::Blob(bytes.as_slice())),
+            // OSC 1.1 types not yet supported in conversion
+            #[cfg(feature = "osc11")]
+            IrValue::Color { .. } | IrValue::Midi { .. } => None,
             _ => None,
         }
     }
