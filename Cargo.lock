@@ -163,7 +163,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osc-adapter-osc-types"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 dependencies = [
  "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -173,9 +173,7 @@ dependencies = [
 
 [[package]]
 name = "osc-codec-json"
-version = "0.1.0-alpha.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "056840f745cdfe97818315266774ef4d643dd380e0b2f2f711ec36033436dbce"
+version = "0.1.0-alpha.3"
 dependencies = [
  "base64",
  "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -186,6 +184,8 @@ dependencies = [
 [[package]]
 name = "osc-codec-json"
 version = "0.1.0-alpha.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64808397a6c16e3bd8f89337d15c5ce4c9475a24de29ef0453459382bc4549e9"
 dependencies = [
  "base64",
  "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -220,7 +220,7 @@ version = "0.1.0-alpha.1"
 dependencies = [
  "anyhow",
  "clap",
- "osc-codec-json 0.1.0-alpha.2",
+ "osc-codec-json 0.1.0-alpha.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
