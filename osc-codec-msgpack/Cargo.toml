@@ -13,7 +13,7 @@ categories = ["encoding"]
 readme = "README.md"
 
 [dependencies]
-osc-ir = { version = "0.1.0-alpha.1", path = "../osc-ir", features = ["alloc", "serde"] }
+osc-ir = { version = "0.1.0-alpha.1", features = ["alloc", "serde"] }
 serde = { version = "1", features = ["derive"] }
 rmp-serde = "1"
 

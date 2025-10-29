@@ -1,3 +1,36 @@
+//! # osc-adapter-osc-types
+//!
+//! ⚠️ **EXPERIMENTAL** ⚠️  
+//! This crate is experimental and APIs may change significantly between versions.
+//!
+//! Bidirectional adapter between `osc-ir` intermediate representation and `rust-osc-types`
+//! for seamless conversion between OSC data formats.
+//!
+//! ## Features
+//!
+//! - **Bidirectional Conversion**: Convert between `IrValue` and OSC types from `rust-osc-types`
+//! - **OSC Version Support**: Support for both OSC 1.0 and OSC 1.1 via feature flags
+//! - **Message Conversion**: Convert OSC messages to/from IR representation
+//! - **Type Preservation**: Maintain type information during conversion
+//! - **no_std Compatible**: Works in no_std environments with `alloc`
+//!
+//! ## Usage
+//!
+//! This crate provides bidirectional conversion between `osc-ir` and `rust-osc-types`.
+//! The exact API depends on which OSC version features are enabled.
+//!
+//! ```rust
+//! use osc_ir::IrValue;
+//!
+//! // Create basic IR values that can be converted
+//! let frequency = IrValue::from(440.0);
+//! let waveform = IrValue::from("sine");
+//! let message_args = vec![frequency, waveform];
+//! 
+//! // These values can be used with the version-specific adapters
+//! assert_eq!(message_args.len(), 2);
+//! ```
+
 #![cfg_attr(not(test), no_std)]
 
 extern crate alloc;
@@ -74,6 +107,9 @@ pub mod v10 {
             IrValue::Float(f) => Some(osc::OscType::Float(*f as f32)),
             IrValue::String(s) => Some(osc::OscType::String(s.as_ref())),
             IrValue::Binary(bytes) => Some(osc::OscType::Blob(bytes.as_slice())),
+            // OSC 1.1 types not yet supported in conversion
+            #[cfg(feature = "osc11")]
+            IrValue::Color { .. } | IrValue::Midi { .. } => None,
             _ => None,
         }
     }

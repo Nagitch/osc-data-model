@@ -1,3 +1,47 @@
+//! # osc-ir
+//!
+//! ⚠️ **EXPERIMENTAL** ⚠️  
+//! This crate is experimental and APIs may change significantly between versions.
+//!
+//! A protocol-agnostic Intermediate Representation (IR) for OSC-adjacent data structures,
+//! designed to work seamlessly with JSON, MessagePack, and other serialization formats.
+//!
+//! ## Features
+//!
+//! - **OSC Version Support**: Configurable OSC 1.0 and OSC 1.1 support via feature flags
+//! - **no_std Compatible**: Core functionality works without std (requires `alloc` feature for owned containers)
+//! - **Bundle Support**: Full OSC Bundle implementation with nested bundle support  
+//! - **Flexible Types**: Support for all OSC types including timestamps, binary data, and extensible types
+//! - **Serde Integration**: Optional serde support for JSON/MessagePack serialization
+//!
+//! ## Basic Usage
+//!
+//! ```rust
+//! use osc_ir::{IrValue, IrBundle, IrTimetag};
+//!
+//! // Create basic values
+//! let message = IrValue::from("hello world");
+//! let number = IrValue::from(42);
+//! let boolean = IrValue::from(true);
+//!
+//! // Create arrays
+//! let array = IrValue::from(vec![
+//!     IrValue::from(1),
+//!     IrValue::from(2), 
+//!     IrValue::from(3)
+//! ]);
+//!
+//! // Create bundles with timetags
+//! # #[cfg(feature = "osc10")]
+//! # {
+//! let mut bundle = IrBundle::new(IrTimetag::from_ntp(12345));
+//! bundle.add_message(message);
+//! bundle.add_message(number);
+//!
+//! let bundle_value = IrValue::Bundle(bundle);
+//! # }
+//! ```
+
 #![cfg_attr(not(test), no_std)]
 
 extern crate alloc;
