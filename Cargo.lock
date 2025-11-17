@@ -166,7 +166,7 @@ name = "osc-adapter-osc-types"
 version = "0.1.0-alpha.3"
 dependencies = [
  "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
  "osc-types10",
  "osc-types11",
 ]
@@ -176,7 +176,7 @@ name = "osc-codec-json"
 version = "0.1.0-alpha.5"
 dependencies = [
  "base64",
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
  "serde",
  "serde_json",
 ]
@@ -188,7 +188,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf29b762819ba75d716ed67ca8f352f8aec52b65869316e2ebb33cfb627e6142"
 dependencies = [
  "base64",
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
  "serde",
  "serde_json",
 ]
@@ -197,7 +197,7 @@ dependencies = [
 name = "osc-codec-msgpack"
 version = "0.1.0-alpha.1"
 dependencies = [
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
  "rmp-serde",
  "rmpv",
  "serde",
@@ -209,7 +209,7 @@ version = "0.1.0-alpha.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "adc6e1d77ba4415e216d9eff921d266b8361f2599bb7557586ab74f0bbee2d44"
 dependencies = [
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
  "rmp-serde",
  "serde",
 ]
@@ -222,7 +222,15 @@ dependencies = [
  "clap",
  "osc-codec-json 0.1.0-alpha.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "osc-codec-msgpack 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "osc-ir 0.1.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "osc-ir",
+]
+
+[[package]]
+name = "osc-ffi"
+version = "0.1.0"
+dependencies = [
+ "osc-codec-msgpack 0.1.0-alpha.1",
+ "osc-ir",
 ]
 
 [[package]]
@@ -232,16 +240,6 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
-]
-
-[[package]]
-name = "osc-ir"
-version = "0.1.0-alpha.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56f6bfb8751d4c5420e75a5104e0100be476dc915a6f4883c5f53c42e20005fb"
-dependencies = [
- "serde",
- "serde_bytes",
 ]
 
 [[package]]
