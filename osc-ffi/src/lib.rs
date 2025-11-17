@@ -40,13 +40,14 @@ impl OscMessageHandle {
     }
 
     fn to_ir_value(&self) -> IrValue {
-        let mut map = Vec::with_capacity(3);
-        map.push((String::from("$type"), IrValue::from(MESSAGE_TYPE_TAG)));
-        map.push((
-            String::from("address"),
-            IrValue::from(self.address.as_str()),
-        ));
-        map.push((String::from("args"), IrValue::Array(self.args.clone())));
+        let map = vec![
+            (String::from("$type"), IrValue::from(MESSAGE_TYPE_TAG)),
+            (
+                String::from("address"),
+                IrValue::from(self.address.as_str()),
+            ),
+            (String::from("args"), IrValue::Array(self.args.clone())),
+        ];
         IrValue::Map(map)
     }
 }
@@ -79,8 +80,13 @@ where
     f(msg)
 }
 
+/// # Safety
+///
+/// `address` must point to a valid null-terminated string and `out_handle` must
+/// be a valid, non-null pointer where the allocated handle pointer can be
+/// stored.
 #[no_mangle]
-pub extern "C" fn osc_message_new(
+pub unsafe extern "C" fn osc_message_new(
     address: *const c_char,
     out_handle: *mut *mut OscMessageHandle,
 ) -> OscFfiError {
@@ -93,34 +99,49 @@ pub extern "C" fn osc_message_new(
     };
     let handle = OscMessageHandle::new(addr_str);
     let boxed = Box::new(handle);
-    unsafe {
-        *out_handle = Box::into_raw(boxed);
-    }
+    *out_handle = Box::into_raw(boxed);
     OscFfiError::Ok
 }
 
+/// # Safety
+///
+/// `handle` must have been created by `osc_message_new` and not already freed.
 #[no_mangle]
-pub extern "C" fn osc_message_free(handle: *mut OscMessageHandle) {
+pub unsafe extern "C" fn osc_message_free(handle: *mut OscMessageHandle) {
     if handle.is_null() {
         return;
     }
-    unsafe {
-        drop(Box::from_raw(handle));
-    }
+    drop(Box::from_raw(handle));
 }
 
+/// # Safety
+///
+/// `handle` must be a valid pointer obtained from `osc_message_new`.
 #[no_mangle]
-pub extern "C" fn osc_message_add_i32(handle: *mut OscMessageHandle, value: i32) -> OscFfiError {
+pub unsafe extern "C" fn osc_message_add_i32(
+    handle: *mut OscMessageHandle,
+    value: i32,
+) -> OscFfiError {
     with_message_mut(handle, |msg| msg.push_arg(IrValue::Integer(value as i64)))
 }
 
+/// # Safety
+///
+/// `handle` must be a valid pointer obtained from `osc_message_new`.
 #[no_mangle]
-pub extern "C" fn osc_message_add_f32(handle: *mut OscMessageHandle, value: f32) -> OscFfiError {
+pub unsafe extern "C" fn osc_message_add_f32(
+    handle: *mut OscMessageHandle,
+    value: f32,
+) -> OscFfiError {
     with_message_mut(handle, |msg| msg.push_arg(IrValue::Float(value as f64)))
 }
 
+/// # Safety
+///
+/// `handle` must be valid and `value` must point to a valid null-terminated
+/// UTF-8 string.
 #[no_mangle]
-pub extern "C" fn osc_message_add_string(
+pub unsafe extern "C" fn osc_message_add_string(
     handle: *mut OscMessageHandle,
     value: *const c_char,
 ) -> OscFfiError {
@@ -131,8 +152,12 @@ pub extern "C" fn osc_message_add_string(
     with_message_mut(handle, |msg| msg.push_arg(IrValue::from(string)))
 }
 
+/// # Safety
+///
+/// `handle` must be valid and, when `len > 0`, `data` must point to a readable
+/// region of at least `len` bytes.
 #[no_mangle]
-pub extern "C" fn osc_message_add_blob(
+pub unsafe extern "C" fn osc_message_add_blob(
     handle: *mut OscMessageHandle,
     data: *const u8,
     len: usize,
@@ -143,7 +168,7 @@ pub extern "C" fn osc_message_add_blob(
     let bytes = if len == 0 {
         Vec::new()
     } else {
-        let slice = unsafe { slice::from_raw_parts(data, len) };
+        let slice = slice::from_raw_parts(data, len);
         let mut vec = Vec::new();
         if vec.try_reserve(len).is_err() {
             return OscFfiError::InternalError;
@@ -154,8 +179,12 @@ pub extern "C" fn osc_message_add_blob(
     with_message_mut(handle, |msg| msg.push_arg(IrValue::from(bytes)))
 }
 
+/// # Safety
+///
+/// `handle` must be valid and `out_buf` must be a valid, non-null pointer where
+/// the allocated buffer pointer can be stored.
 #[no_mangle]
-pub extern "C" fn osc_message_to_msgpack(
+pub unsafe extern "C" fn osc_message_to_msgpack(
     handle: *const OscMessageHandle,
     out_buf: *mut *mut OscBuffer,
 ) -> OscFfiError {
@@ -163,7 +192,7 @@ pub extern "C" fn osc_message_to_msgpack(
         return OscFfiError::NullPointer;
     }
 
-    let message = unsafe { &*handle };
+    let message = &*handle;
     let ir_value = message.to_ir_value();
 
     let bytes = match try_to_msgpack(&ir_value) {
@@ -180,24 +209,24 @@ pub extern "C" fn osc_message_to_msgpack(
     std::mem::forget(vec);
 
     let boxed = Box::new(buffer);
-    unsafe {
-        *out_buf = Box::into_raw(boxed);
-    }
+    *out_buf = Box::into_raw(boxed);
 
     OscFfiError::Ok
 }
 
+/// # Safety
+///
+/// `buf` must be a buffer previously returned by `osc_message_to_msgpack` and
+/// not already freed.
 #[no_mangle]
-pub extern "C" fn osc_buffer_free(buf: *mut OscBuffer) {
+pub unsafe extern "C" fn osc_buffer_free(buf: *mut OscBuffer) {
     if buf.is_null() {
         return;
     }
 
-    unsafe {
-        let buffer = Box::from_raw(buf);
-        if !buffer.data.is_null() && buffer.capacity > 0 {
-            let _ = Vec::from_raw_parts(buffer.data, buffer.len, buffer.capacity);
-        }
+    let buffer = Box::from_raw(buf);
+    if !buffer.data.is_null() && buffer.capacity > 0 {
+        let _ = Vec::from_raw_parts(buffer.data, buffer.len, buffer.capacity);
     }
 }
 
@@ -212,32 +241,28 @@ mod tests {
     fn message_roundtrip() {
         let mut handle: *mut OscMessageHandle = ptr::null_mut();
         let address = CString::new("/ffi/test").unwrap();
-        assert_eq!(
-            OscFfiError::Ok,
+        assert_eq!(OscFfiError::Ok, unsafe {
             osc_message_new(address.as_ptr(), &mut handle)
-        );
+        });
         assert!(!handle.is_null());
 
-        assert_eq!(OscFfiError::Ok, osc_message_add_i32(handle, 42));
-        assert_eq!(OscFfiError::Ok, osc_message_add_f32(handle, 1.5));
+        assert_eq!(OscFfiError::Ok, unsafe { osc_message_add_i32(handle, 42) });
+        assert_eq!(OscFfiError::Ok, unsafe { osc_message_add_f32(handle, 1.5) });
 
         let text = CString::new("hello").unwrap();
-        assert_eq!(
-            OscFfiError::Ok,
+        assert_eq!(OscFfiError::Ok, unsafe {
             osc_message_add_string(handle, text.as_ptr())
-        );
+        });
 
         let blob = [1_u8, 2, 3, 4];
-        assert_eq!(
-            OscFfiError::Ok,
+        assert_eq!(OscFfiError::Ok, unsafe {
             osc_message_add_blob(handle, blob.as_ptr(), blob.len())
-        );
+        });
 
         let mut buffer_ptr: *mut OscBuffer = ptr::null_mut();
-        assert_eq!(
-            OscFfiError::Ok,
+        assert_eq!(OscFfiError::Ok, unsafe {
             osc_message_to_msgpack(handle, &mut buffer_ptr)
-        );
+        });
         assert!(!buffer_ptr.is_null());
 
         let buffer = unsafe { &*buffer_ptr };
@@ -258,26 +283,27 @@ mod tests {
         assert_eq!(args[2].as_str(), Some("hello"));
         assert_eq!(args[3].as_binary(), Some(&blob[..]));
 
-        osc_buffer_free(buffer_ptr);
-        osc_message_free(handle);
+        unsafe {
+            osc_buffer_free(buffer_ptr);
+            osc_message_free(handle);
+        }
     }
 
     #[test]
     fn null_pointer_errors() {
-        assert_eq!(
-            OscFfiError::NullPointer,
+        assert_eq!(OscFfiError::NullPointer, unsafe {
             osc_message_new(ptr::null(), ptr::null_mut())
-        );
+        });
         let mut handle: *mut OscMessageHandle = ptr::null_mut();
         let address = CString::new("/null").unwrap();
-        assert_eq!(
-            OscFfiError::Ok,
+        assert_eq!(OscFfiError::Ok, unsafe {
             osc_message_new(address.as_ptr(), &mut handle)
-        );
-        assert_eq!(
-            OscFfiError::NullPointer,
+        });
+        assert_eq!(OscFfiError::NullPointer, unsafe {
             osc_message_add_string(handle, ptr::null())
-        );
-        osc_message_free(handle);
+        });
+        unsafe {
+            osc_message_free(handle);
+        }
     }
 }
