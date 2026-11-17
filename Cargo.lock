@@ -71,6 +71,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
+name = "base64"
+version = "0.23.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac07cdecf99051d9a5238b80f35af32cdeba5b336e55d957b318b50137e18da5"
+
+[[package]]
 name = "byteorder"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -175,7 +181,7 @@ dependencies = [
 name = "osc-codec-json"
 version = "0.1.0-alpha.5"
 dependencies = [
- "base64",
+ "base64 0.23.1",
  "osc-ir",
  "serde",
  "serde_json",
@@ -187,7 +193,7 @@ version = "0.1.0-alpha.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf29b762819ba75d716ed67ca8f352f8aec52b65869316e2ebb33cfb627e6142"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "osc-ir",
  "serde",
  "serde_json",
